@@ -3,6 +3,7 @@ package com.lypaka.gces.gottacatchemsmall.Utils;
 import com.google.common.reflect.TypeToken;
 import com.lypaka.gces.gottacatchemsmall.Config.ConfigManager;
 import ninja.leaping.configurate.objectmapping.ObjectMappingException;
+import org.spongepowered.api.Sponge;
 import org.spongepowered.api.entity.living.player.Player;
 
 import java.io.IOException;
@@ -50,18 +51,40 @@ public class AccountHandler {
 
     public static void addPermission (Player player, String permission) throws ObjectMappingException {
 
+        String mode = ConfigManager.getConfigNode(6, "Permission-Mode").getString();
 
-        ArrayList<String> list = new ArrayList<String>(ConfigManager.getPlayerConfigNode(player.getUniqueId(),"Unlocked-Permissions").getList(TypeToken.of(String.class)));
-        list.add(permission);
-        ConfigManager.getPlayerConfigNode(player.getUniqueId(),"Unlocked-Permissions").setValue(list);
+        if (mode.equalsIgnoreCase("gces")) {
+
+            ArrayList<String> list = new ArrayList<String>(ConfigManager.getPlayerConfigNode(player.getUniqueId(),"Unlocked-Permissions").getList(TypeToken.of(String.class)));
+            list.add(permission);
+            ConfigManager.getPlayerConfigNode(player.getUniqueId(),"Unlocked-Permissions").setValue(list);
+
+        } else {
+
+            Sponge.getCommandManager().process(Sponge.getServer().getConsole(), "lp user " + player.getName() + " permission set " + permission + " true");
+
+        }
+
 
     }
 
     public static void removePermission (Player player, String permission) throws ObjectMappingException, IOException {
 
-        ArrayList<String> list = new ArrayList<String>(ConfigManager.getPlayerConfigNode(player.getUniqueId(),"Unlocked-Permissions").getList(TypeToken.of(String.class)));
-        list.remove(permission);
-        ConfigManager.getPlayerConfigNode(player.getUniqueId(),"Unlocked-Permissions").setValue(list);
+        String mode = ConfigManager.getConfigNode(6, "Permission-Mode").getString();
+
+        if (mode.equalsIgnoreCase("gces")) {
+
+            ArrayList<String> list = new ArrayList<String>(ConfigManager.getPlayerConfigNode(player.getUniqueId(),"Unlocked-Permissions").getList(TypeToken.of(String.class)));
+            list.remove(permission);
+            ConfigManager.getPlayerConfigNode(player.getUniqueId(),"Unlocked-Permissions").setValue(list);
+
+        } else {
+
+            Sponge.getCommandManager().process(Sponge.getServer().getConsole(), "lp user " + player.getName() + " permission unset " + permission);
+
+
+        }
+
 
     }
 
@@ -69,7 +92,18 @@ public class AccountHandler {
 
     public static boolean hasPermission (Player player, String permission) throws ObjectMappingException {
 
-        return ConfigManager.getPlayerConfigNode(player.getUniqueId(),"Unlocked-Permissions").getList(TypeToken.of(String.class)).contains(permission);
+        String mode = ConfigManager.getConfigNode(6, "Permission-Mode").getString();
+
+        if (mode.equalsIgnoreCase("gces")) {
+
+            return ConfigManager.getPlayerConfigNode(player.getUniqueId(),"Unlocked-Permissions").getList(TypeToken.of(String.class)).contains(permission);
+
+        } else {
+
+            return player.hasPermission(permission);
+
+        }
+
 
     }
 

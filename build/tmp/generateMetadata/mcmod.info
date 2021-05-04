@@ -8,10 +8,10 @@
             "Lypaka"
         ],
         "dependencies": [
-            "spongeapi@7.2.0-SNAPSHOT"
+            "spongeapi@7.3.0-SNAPSHOT"
         ],
         "requiredMods": [
-            "spongeapi@7.2.0-SNAPSHOT"
+            "spongeapi@7.3.0-SNAPSHOT"
         ],
         "mcversion": "${mcversion}",
         "updateUrl": "",
@@ -20,8 +20,8 @@
         "screenshots": []
     },
     {
-        "modid": "gotta-catch-em-small",
-        "name": "Gotta-Catch-Em-Small",
-        "version": "5.0.5-Generations"
+        "modid": "gces-generations",
+        "name": "GCES-Generations",
+        "version": "5.1.0-Generations"
     }
 ]
