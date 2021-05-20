@@ -224,8 +224,18 @@ public class GCESAdminCommand {
                 .executor((sender, context) -> {
 
                     Player player = (Player) sender;
-                    int catchLvl = AccountHandler.getCatchTier(player);
-                    int levelLvl = AccountHandler.getLevelTier(player);
+                    int catchLvl = 0;
+                    try {
+                        catchLvl = AccountHandler.getCatchTier(player);
+                    } catch (ObjectMappingException e) {
+                        e.printStackTrace();
+                    }
+                    int levelLvl = 0;
+                    try {
+                        levelLvl = AccountHandler.getLevelTier(player);
+                    } catch (ObjectMappingException e) {
+                        e.printStackTrace();
+                    }
                     player.sendMessage(Text.of(TextColors.YELLOW, "Catch level = " + catchLvl + ". Level level = " + levelLvl));
 
                     return CommandResult.success();

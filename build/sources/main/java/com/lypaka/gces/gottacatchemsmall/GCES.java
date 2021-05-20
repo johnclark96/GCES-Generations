@@ -4,6 +4,7 @@ import com.google.inject.Inject;
 import com.lypaka.gces.gottacatchemsmall.Commands.GCESAdminCommand;
 import com.lypaka.gces.gottacatchemsmall.Config.ConfigManager;
 import com.lypaka.gces.gottacatchemsmall.Listeners.*;
+import com.lypaka.gces.gottacatchemsmall.Utils.AccountHandler;
 import net.minecraftforge.common.MinecraftForge;
 import org.slf4j.Logger;
 import org.spongepowered.api.Sponge;
@@ -19,7 +20,7 @@ import java.nio.file.Path;
 @Plugin(
         id = "gottacatchemsmall",
         name = "GCS",
-        version = "4.3.3-Generations"
+        version = "6.0.0-Generations"
 )
 public class GCES {
 
@@ -34,6 +35,8 @@ public class GCES {
     public Logger logger;
 
     public static GCES instance;
+
+    public static boolean isPixelSkillsLoaded = false;
 
     @Listener
     public void onPreInit (GamePreInitializationEvent event) {
@@ -61,13 +64,31 @@ public class GCES {
             ConfigManager.getConfigNode(3, "Trading", "Legendaries", "Message").setValue("&4You have not unlocked the ability to receive this legendary Pokemon yet!");
 
         }
+        if (ConfigManager.getConfigNode(6, "Storage-Mode").isVirtual()) {
+
+            ConfigManager.getConfigNode(6, "Storage-Mode").setValue("accounts");
+
+        }
         ConfigManager.save();
+
+        if (Sponge.getPluginManager().getPlugin("pixelskills").isPresent()) {
+
+            isPixelSkillsLoaded = true;
+            logger.info("Detected PixelSkills! Activating Skill tier restrictions!");
+
+            // If we load this with the other events, will probably throw error when PixelSkills is not present
+            MinecraftForge.EVENT_BUS.register(new SkillsListener());
+
+        }
+
     }
 
     @Listener
     public void onReload (GameReloadEvent event) {
+
         ConfigManager.load();
         logger.info("GCES has reloaded!");
+
     }
 
     public static PluginContainer getContainer() {
@@ -76,6 +97,12 @@ public class GCES {
 
     public static Logger getLogger() {
         return instance.logger;
+    }
+
+    public static Path getDir() {
+
+        return instance.configDir;
+
     }
 
 }

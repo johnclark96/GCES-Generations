@@ -42,14 +42,15 @@ repositories {
         name = 'JitPack'
         url = 'https://jitpack.io/'
     }
-    maven { url = "http://52.144.46.165:8081/repository/maven-releases/"}
 }
 
 dependencies {
     compile ("org.spongepowered:spongeapi:7.3.0-SNAPSHOT")
     compile 'com.github.codehusky:HuskyUI-Plugin:v0.6.0-PRE4'
-    compileOnly 'com.pixelmongenerations:main-mod:8.4.2'
+    compileOnly fileTree(dir: 'C:\\Users\\Ryan\\Desktop\\Plugins\\LIBRARIES', include: ['PixelSkills-Generations.jar'])
+    compileOnly fileTree(dir: 'C:\\Users\\Ryan\\Desktop\\Plugins\\LIBRARIES', include: ['Generations.jar'])
 }
+
 
 processResources {
     // this will ensure that this task is redone when the versions change.

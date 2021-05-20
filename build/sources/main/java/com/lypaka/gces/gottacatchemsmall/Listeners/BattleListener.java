@@ -17,7 +17,7 @@ import org.spongepowered.api.entity.living.player.Player;
 public class BattleListener {
 
     @SubscribeEvent
-    public void onBattleStart (BattleStartEvent event) {
+    public void onBattleStart (BattleStartEvent event) throws ObjectMappingException {
 
         BattleControllerBase bcb = event.getBattleController();
 

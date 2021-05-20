@@ -95,7 +95,7 @@ public class LevelingListener {
     }
 
     @SubscribeEvent
-    public void onEXPGain (ExperienceGainEvent event) {
+    public void onEXPGain (ExperienceGainEvent event) throws ObjectMappingException {
 
         Player player = (Player) event.getPokemon().getPlayerOwner();
         int level = AccountHandler.getLevelTier(player);

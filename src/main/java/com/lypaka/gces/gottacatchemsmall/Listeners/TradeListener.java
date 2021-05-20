@@ -75,29 +75,6 @@ public class TradeListener {
 
         }
 
-        if (TierHandler.restrictLegendaries()) {
-
-            Player player = (Player) event.getPlayer();
-            EntityPixelmon pokemon = event.getPokemon();
-
-            if (!AccountHandler.hasPermission(player, TierHandler.getLegendaryPermission())) {
-
-                for (String name : EnumSpecies.legendaries) {
-
-                    if (name.equalsIgnoreCase(pokemon.getPokemonName())) {
-
-                        event.getPokemon().setMoveset(new Moveset());
-                        player.sendMessage(FancyText.getFancyText(TierHandler.getLegendaryMessage()));
-                        break;
-
-                    }
-
-                }
-
-            }
-
-        }
-
     }
 
     private static int getMaxLvl (String value, int num) {

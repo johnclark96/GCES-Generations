@@ -1,8 +1,10 @@
 package com.lypaka.gces.gottacatchemsmall.Listeners;
 
 import com.lypaka.gces.gottacatchemsmall.Config.ConfigManager;
+import com.lypaka.gces.gottacatchemsmall.GCES;
 import com.lypaka.gces.gottacatchemsmall.Utils.AccountHandler;
 import com.lypaka.gces.gottacatchemsmall.Utils.TierHandler;
+import com.lypaka.pixelskills.PixelSkills;
 import ninja.leaping.configurate.objectmapping.ObjectMappingException;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.event.Listener;
@@ -10,6 +12,8 @@ import org.spongepowered.api.event.filter.cause.Root;
 import org.spongepowered.api.event.network.ClientConnectionEvent;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 public class JoinListener {
 
@@ -17,7 +21,24 @@ public class JoinListener {
     public void onFirstJoin (ClientConnectionEvent.Join event, @Root Player player) {
 
         ConfigManager.loadPlayer(player.getUniqueId());
+        if (GCES.isPixelSkillsLoaded) {
 
+            if (ConfigManager.getPlayerConfigNode(player.getUniqueId(), "Levels", "Skill-Tiers", "Archaeologist").isVirtual()) {
+
+                Map<String, Integer> map = new HashMap<>();
+                for (String skill : PixelSkills.skills) {
+
+                    map.put(skill, 1);
+
+                }
+
+                System.out.println(map);
+                ConfigManager.getPlayerConfigNode(player.getUniqueId(), "Levels", "Skill-Tiers").setValue(map);
+                ConfigManager.savePlayer(player.getUniqueId());
+
+            }
+
+        }
 
     }
 
