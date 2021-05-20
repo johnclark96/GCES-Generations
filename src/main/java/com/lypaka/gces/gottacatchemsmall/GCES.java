@@ -4,7 +4,6 @@ import com.google.inject.Inject;
 import com.lypaka.gces.gottacatchemsmall.Commands.GCESAdminCommand;
 import com.lypaka.gces.gottacatchemsmall.Config.ConfigManager;
 import com.lypaka.gces.gottacatchemsmall.Listeners.*;
-import com.lypaka.gces.gottacatchemsmall.Utils.AccountHandler;
 import net.minecraftforge.common.MinecraftForge;
 import org.slf4j.Logger;
 import org.spongepowered.api.Sponge;
@@ -62,11 +61,6 @@ public class GCES {
 
             ConfigManager.getConfigNode(3, "Trading", "Legendaries", "Enabled").setValue(true);
             ConfigManager.getConfigNode(3, "Trading", "Legendaries", "Message").setValue("&4You have not unlocked the ability to receive this legendary Pokemon yet!");
-
-        }
-        if (ConfigManager.getConfigNode(6, "Storage-Mode").isVirtual()) {
-
-            ConfigManager.getConfigNode(6, "Storage-Mode").setValue("accounts");
 
         }
         ConfigManager.save();

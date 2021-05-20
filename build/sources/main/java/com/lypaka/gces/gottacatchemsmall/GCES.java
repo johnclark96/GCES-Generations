@@ -64,11 +64,6 @@ public class GCES {
             ConfigManager.getConfigNode(3, "Trading", "Legendaries", "Message").setValue("&4You have not unlocked the ability to receive this legendary Pokemon yet!");
 
         }
-        if (ConfigManager.getConfigNode(6, "Storage-Mode").isVirtual()) {
-
-            ConfigManager.getConfigNode(6, "Storage-Mode").setValue("accounts");
-
-        }
         ConfigManager.save();
 
         if (Sponge.getPluginManager().getPlugin("pixelskills").isPresent()) {

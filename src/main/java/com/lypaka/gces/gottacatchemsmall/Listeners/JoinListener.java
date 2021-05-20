@@ -32,7 +32,6 @@ public class JoinListener {
 
                 }
 
-                System.out.println(map);
                 ConfigManager.getPlayerConfigNode(player.getUniqueId(), "Levels", "Skill-Tiers").setValue(map);
                 ConfigManager.savePlayer(player.getUniqueId());
 

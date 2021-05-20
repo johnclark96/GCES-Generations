@@ -24,6 +24,12 @@ public class SkillsListener {
         String skill = event.getSkill();
         Player player = event.getPlayer();
 
+        if (!ConfigManager.getConfigNode(7, "Skills", "Enable-Skill-Restriction").getBoolean()) {
+
+            return;
+
+        }
+
         List<String> blackList = ConfigManager.getConfigNode(7, "Skills", "Blacklist").getList(TypeToken.of(String.class));
         if (blackList.contains(skill)) {
 
