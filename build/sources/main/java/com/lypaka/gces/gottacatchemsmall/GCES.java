@@ -4,7 +4,6 @@ import com.google.inject.Inject;
 import com.lypaka.gces.gottacatchemsmall.Commands.GCESAdminCommand;
 import com.lypaka.gces.gottacatchemsmall.Config.ConfigManager;
 import com.lypaka.gces.gottacatchemsmall.Listeners.*;
-import com.lypaka.gces.gottacatchemsmall.Utils.AccountHandler;
 import net.minecraftforge.common.MinecraftForge;
 import org.slf4j.Logger;
 import org.spongepowered.api.Sponge;
