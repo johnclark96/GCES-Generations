@@ -106,6 +106,12 @@ public class JoinListener {
 
         }
 
+        if (ConfigManager.getConfigNode(8, "Dynamaxing", "Unlock-Permission-Give-On-Join").getBoolean()) {
+
+            AccountHandler.addPermission(player, ConfigManager.getConfigNode(8, "Dynamaxing", "Unlock-Dynamaxing").getString());
+
+        }
+
         ConfigManager.savePlayer(player.getUniqueId());
 
     }

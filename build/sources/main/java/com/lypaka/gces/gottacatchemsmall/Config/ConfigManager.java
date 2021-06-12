@@ -29,7 +29,7 @@ public class ConfigManager {
 
     /** Name of the file to grab configuration settings from. */
     private static final String[] FILE_NAMES = {"catching.conf", "evolving.conf", "leveling.conf", "trading.conf", "zmoves.conf",
-            "legendaries.conf", "misc.conf", "skills.conf"};
+            "legendaries.conf", "misc.conf", "skills.conf", "dynamaxing.conf"};
     /** Paths needed to locate the configuration file. */
     private static Path dir;
     private static Path playerDir;
