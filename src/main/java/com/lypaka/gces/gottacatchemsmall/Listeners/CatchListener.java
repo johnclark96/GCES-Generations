@@ -1,5 +1,6 @@
 package com.lypaka.gces.gottacatchemsmall.Listeners;
 
+import com.google.common.reflect.TypeToken;
 import com.lypaka.gces.gottacatchemsmall.Config.ConfigManager;
 import com.lypaka.gces.gottacatchemsmall.Utils.AccountHandler;
 import com.lypaka.gces.gottacatchemsmall.Utils.FancyText;
@@ -12,6 +13,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import ninja.leaping.configurate.objectmapping.ObjectMappingException;
 import org.spongepowered.api.entity.living.player.Player;
+import org.spongepowered.api.world.World;
 
 import java.util.List;
 
@@ -21,6 +23,13 @@ public class CatchListener {
     public void onCapture (CaptureEvent.StartCaptureEvent event) throws ObjectMappingException {
 
         Player player = (Player) event.getPlayer();
+        if (!ConfigManager.getConfigNode(7, "World-Blacklist").isEmpty()) {
+
+            List<String> worlds = ConfigManager.getConfigNode(7, "World-Blacklist").getList(TypeToken.of(String.class));
+            World world = player.getWorld();
+            if (worlds.contains(world.getName())) return;
+
+        }
         int pokeLevel = event.getPokemon().level.getLevel();
 
         if (event.getPokemon().isShiny() && !TierHandler.areShiniesRestricted()) return;

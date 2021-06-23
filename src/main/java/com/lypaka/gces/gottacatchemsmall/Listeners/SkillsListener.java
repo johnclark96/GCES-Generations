@@ -10,6 +10,7 @@ import com.lypaka.pixelskills.Utils.CustomEvents.SkillLevelUpEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import ninja.leaping.configurate.objectmapping.ObjectMappingException;
 import org.spongepowered.api.entity.living.player.Player;
+import org.spongepowered.api.world.World;
 
 import java.util.List;
 import java.util.Map;
@@ -23,7 +24,13 @@ public class SkillsListener {
 
         String skill = event.getSkill();
         Player player = event.getPlayer();
+        if (!ConfigManager.getConfigNode(7, "World-Blacklist").isEmpty()) {
 
+            List<String> worlds = ConfigManager.getConfigNode(7, "World-Blacklist").getList(TypeToken.of(String.class));
+            World world = player.getWorld();
+            if (worlds.contains(world.getName())) return;
+
+        }
         if (ConfigManager.getConfigNode(7, "Skills", "Enable-Skill-Restriction").getBoolean()) {
 
             List<String> blackList = ConfigManager.getConfigNode(7, "Skills", "Blacklist").getList(TypeToken.of(String.class));
