@@ -65,6 +65,13 @@ public class SkillsListener {
 
         String skill = event.getSkill();
         Player player = event.getPlayer();
+        if (!ConfigManager.getConfigNode(7, "World-Blacklist").isEmpty()) {
+
+            List<String> worlds = ConfigManager.getConfigNode(7, "World-Blacklist").getList(TypeToken.of(String.class));
+            World world = player.getWorld();
+            if (worlds.contains(world.getName())) return;
+
+        }
 
         if (ConfigManager.getConfigNode(7, "Skills", "Enable-Skill-Restriction").getBoolean()) {
 

@@ -71,6 +71,13 @@ public class BattleListener {
 
                 EntityPlayerMP fPlayer = (EntityPlayerMP) bcb.participants.get(1).getEntity();
                 Player player = (Player) fPlayer;
+                if (!ConfigManager.getConfigNode(7, "World-Blacklist").isEmpty()) {
+
+                    List<String> worlds = ConfigManager.getConfigNode(7, "World-Blacklist").getList(TypeToken.of(String.class));
+                    World world = player.getWorld();
+                    if (worlds.contains(world.getName())) return;
+
+                }
                 int level = AccountHandler.getLevelTier(player);
                 int pokeLevel = TierHandler.getMaxLvlLevel(level);
 

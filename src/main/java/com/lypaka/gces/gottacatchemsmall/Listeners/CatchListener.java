@@ -253,6 +253,6 @@ public class CatchListener {
                 pokemon.contains("Necrozma") || pokemon.contains("Meloetta") || pokemon.contains("Genesect") || pokemon.contains("Diancie") || pokemon.contains("Hoopa") ||
                 pokemon.contains("Volcanion") || pokemon.contains("Magearna") || pokemon.contains("Marshadow") || pokemon.contains("Zeraora") || pokemon.contains("Zacian") ||
                 pokemon.contains("Zamazenta") || pokemon.contains("Eternatus") || pokemon.contains("Meltan") || pokemon.contains("Melmetal") || pokemon.contains("Zarude") || pokemon.contains("Calyrex") ||
-                pokemon.contains("Glastrier") || pokemon.contains("Spectrier") || pokemon.contains("Regieleki") || pokemon.contains("Regidrago");
+                pokemon.contains("Glastrier") || pokemon.contains("Spectrier") || pokemon.contains("Regieleki") || pokemon.contains("Regidrago") || pokemon.contains("Kubfu") || pokemon.contains("Urshifu");
     }
 }
