@@ -1,6 +1,7 @@
 package com.lypaka.gces.gottacatchemsmall.Listeners;
 
 import com.google.common.reflect.TypeToken;
+import com.lypaka.gces.gottacatchemsmall.Config.ConfigGetters;
 import com.lypaka.gces.gottacatchemsmall.Config.ConfigManager;
 import com.lypaka.gces.gottacatchemsmall.Utils.AccountHandler;
 import com.lypaka.gces.gottacatchemsmall.Utils.FancyText;
@@ -23,22 +24,25 @@ public class CatchListener {
     public void onCapture (CaptureEvent.StartCaptureEvent event) throws ObjectMappingException {
 
         Player player = (Player) event.getPlayer();
-        if (!ConfigManager.getConfigNode(7, "World-Blacklist").isEmpty()) {
+        if (ConfigGetters.getPlayerDifficulty(player).equalsIgnoreCase("none")) return;
 
-            List<String> worlds = ConfigManager.getConfigNode(7, "World-Blacklist").getList(TypeToken.of(String.class));
+        int index = ConfigGetters.getIndexFromString(ConfigGetters.getPlayerDifficulty(player));
+        if (!ConfigManager.getConfigNode(index, 7, "World-Blacklist").isEmpty()) {
+
+            List<String> worlds = ConfigManager.getConfigNode(index, 7, "World-Blacklist").getList(TypeToken.of(String.class));
             World world = player.getWorld();
             if (worlds.contains(world.getName())) return;
 
         }
         int pokeLevel = event.getPokemon().level.getLevel();
 
-        if (event.getPokemon().isShiny() && !TierHandler.areShiniesRestricted()) return;
+        if (event.getPokemon().isShiny() && !TierHandler.areShiniesRestricted(index)) return;
 
         if (isLegendary(event.getPokemon().getPokemonName())) {
 
-            if (TierHandler.areLegendariesRestricted()) {
+            if (TierHandler.areLegendariesRestricted(index)) {
 
-                if (!AccountHandler.hasPermission(player, TierHandler.getLegendaryPermission())) {
+                if (!AccountHandler.hasPermission(player, TierHandler.getLegendaryPermission(index), index)) {
 
                     event.setCanceled(true);
 
@@ -53,24 +57,24 @@ public class CatchListener {
                     org.spongepowered.api.item.inventory.ItemStack stack = (org.spongepowered.api.item.inventory.ItemStack) (Object) fStack;
                     stack.setQuantity(1);
                     player.getInventory().offer(stack);
-                    player.sendMessage(FancyText.getFancyText(TierHandler.getCatchLegendaryMessage()));
+                    player.sendMessage(FancyText.getFancyText(TierHandler.getCatchLegendaryMessage(index)));
 
                 } else {
 
-                    if (TierHandler.doIndividualLegendaries()) {
+                    if (TierHandler.doIndividualLegendaries(index)) {
 
                         String name = event.getPokemon().getPokemonName();
-                        List<String> groups = TierHandler.getGroups();
+                        List<String> groups = TierHandler.getGroups(index);
 
                         for (String group : groups) {
 
-                            List<String> pokemonList = TierHandler.getLegendaries(group);
+                            List<String> pokemonList = TierHandler.getLegendaries(index, group);
                             if (pokemonList.contains(name)) {
 
-                                if (!AccountHandler.hasPermission(player, group)) {
+                                if (!AccountHandler.hasPermission(player, group, index)) {
 
                                     event.setCanceled(true);
-                                    String message = ConfigManager.getConfigNode(5, "Individual-Unlocking", "Message").getString();
+                                    String message = ConfigManager.getConfigNode(index, 5, "Individual-Unlocking", "Message").getString();
                                     player.sendMessage(FancyText.getFancyText(message));
                                     break;
 
@@ -88,11 +92,11 @@ public class CatchListener {
 
         } else {
 
-            if (TierHandler.areEvoStagesRestricted()) {
+            if (TierHandler.areEvoStagesRestricted(index)) {
 
-                if (AccountHandler.hasPermission(player, "gces.catching." + TierHandler.getEvoStage(event.getPokemon()).toLowerCase() + "stage")) {
+                if (AccountHandler.hasPermission(player, "gces.catching." + TierHandler.getEvoStage(event.getPokemon()).toLowerCase() + "stage", index)) {
 
-                    if (TierHandler.isCatchLevelAccessRestricted() && !AccountHandler.hasPermission(player, TierHandler.getCatchPermission())) {
+                    if (TierHandler.isCatchLevelAccessRestricted(index) && !AccountHandler.hasPermission(player, TierHandler.getCatchPermission(index), index)) {
 
                         event.setCanceled(true);
                         if (BattleRegistry.getBattle(player.getName()) != null) {
@@ -106,20 +110,20 @@ public class CatchListener {
                         org.spongepowered.api.item.inventory.ItemStack stack = (org.spongepowered.api.item.inventory.ItemStack) (Object) fStack;
                         stack.setQuantity(1);
                         player.getInventory().offer(stack);
-                        player.sendMessage(FancyText.getFancyText(TierHandler.getCatchLevelMessage(0)));
+                        player.sendMessage(FancyText.getFancyText(TierHandler.getCatchLevelMessage(index, 0)));
 
                     } else {
 
-                        if (TierHandler.isCatchLevelRestricted()) {
+                        if (TierHandler.isCatchLevelRestricted(index)) {
 
-                            int level = AccountHandler.getCatchTier(player);
+                            int level = AccountHandler.getCatchTier(player, index);
 
-                            if (TierHandler.getMaxCatchLevel(level) != 0) {
+                            if (TierHandler.getMaxCatchLevel(index, level) != 0) {
 
-                                if (pokeLevel > TierHandler.getMaxCatchLevel(level)) {
+                                if (pokeLevel > TierHandler.getMaxCatchLevel(index, level)) {
 
                                     event.setCanceled(true);
-                                    player.sendMessage(FancyText.getFancyText(TierHandler.getCatchLevelMessage(level)));
+                                    player.sendMessage(FancyText.getFancyText(TierHandler.getCatchLevelMessage(index, level)));
                                     if (BattleRegistry.getBattle(player.getName()) != null) {
 
                                         BattleRegistry.getBattle(player.getName()).endBattle(EnumBattleEndCause.FORCE);
@@ -137,7 +141,7 @@ public class CatchListener {
                             } else {
 
                                 event.setCanceled(true);
-                                player.sendMessage(FancyText.getFancyText(TierHandler.getCatchLevelMessage(level)));
+                                player.sendMessage(FancyText.getFancyText(TierHandler.getCatchLevelMessage(index, level)));
                                 if (BattleRegistry.getBattle(player.getName()) != null) {
 
                                     BattleRegistry.getBattle(player.getName()).endBattle(EnumBattleEndCause.FORCE);
@@ -159,13 +163,13 @@ public class CatchListener {
                 } else {
 
                     event.setCanceled(true);
-                    player.sendMessage(FancyText.getFancyText(TierHandler.getCatchEvoStageMessage()));
+                    player.sendMessage(FancyText.getFancyText(TierHandler.getCatchEvoStageMessage(index)));
 
                 }
 
             } else {
 
-                if (TierHandler.isCatchLevelAccessRestricted() && !AccountHandler.hasPermission(player, TierHandler.getCatchPermission())) {
+                if (TierHandler.isCatchLevelAccessRestricted(index) && !AccountHandler.hasPermission(player, TierHandler.getCatchPermission(index), index)) {
 
                     event.setCanceled(true);
                     if (BattleRegistry.getBattle(player.getName()) != null) {
@@ -179,20 +183,20 @@ public class CatchListener {
                     org.spongepowered.api.item.inventory.ItemStack stack = (org.spongepowered.api.item.inventory.ItemStack) (Object) fStack;
                     stack.setQuantity(1);
                     player.getInventory().offer(stack);
-                    player.sendMessage(FancyText.getFancyText(TierHandler.getCatchLevelMessage(0)));
+                    player.sendMessage(FancyText.getFancyText(TierHandler.getCatchLevelMessage(index, 0)));
 
                 } else {
 
-                    if (TierHandler.isCatchLevelRestricted()) {
+                    if (TierHandler.isCatchLevelRestricted(index)) {
 
-                        int playerLevel = AccountHandler.getCatchTier(player);
+                        int playerLevel = AccountHandler.getCatchTier(player, index);
 
-                        if (TierHandler.getMaxCatchLevel(playerLevel) != 0) {
+                        if (TierHandler.getMaxCatchLevel(index, playerLevel) != 0) {
 
-                            if (pokeLevel > TierHandler.getMaxCatchLevel(playerLevel)) {
+                            if (pokeLevel > TierHandler.getMaxCatchLevel(index, playerLevel)) {
 
                                 event.setCanceled(true);
-                                player.sendMessage(FancyText.getFancyText(TierHandler.getCatchLevelMessage(playerLevel)));
+                                player.sendMessage(FancyText.getFancyText(TierHandler.getCatchLevelMessage(index, playerLevel)));
                                 if (BattleRegistry.getBattle(player.getName()) != null) {
 
                                     BattleRegistry.getBattle(player.getName()).endBattle(EnumBattleEndCause.FORCE);
@@ -221,7 +225,7 @@ public class CatchListener {
                             org.spongepowered.api.item.inventory.ItemStack stack = (org.spongepowered.api.item.inventory.ItemStack) (Object) fStack;
                             stack.setQuantity(1);
                             player.getInventory().offer(stack);
-                            player.sendMessage(FancyText.getFancyText(TierHandler.getCatchLevelMessage(0)));
+                            player.sendMessage(FancyText.getFancyText(TierHandler.getCatchLevelMessage(index, 0)));
 
                         }
 

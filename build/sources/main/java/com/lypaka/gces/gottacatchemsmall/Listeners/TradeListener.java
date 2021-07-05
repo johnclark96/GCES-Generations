@@ -1,5 +1,8 @@
 package com.lypaka.gces.gottacatchemsmall.Listeners;
 
+import com.google.common.reflect.TypeToken;
+import com.lypaka.gces.gottacatchemsmall.Config.ConfigGetters;
+import com.lypaka.gces.gottacatchemsmall.Config.ConfigManager;
 import com.lypaka.gces.gottacatchemsmall.Utils.AccountHandler;
 import com.lypaka.gces.gottacatchemsmall.Utils.FancyText;
 import com.lypaka.gces.gottacatchemsmall.Utils.TierHandler;
@@ -14,20 +17,34 @@ import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.block.InteractBlockEvent;
 import org.spongepowered.api.event.filter.cause.Root;
+import org.spongepowered.api.world.World;
+
+import java.util.List;
 
 public class TradeListener {
 
     @Listener
     public void onInteract (InteractBlockEvent.Secondary.MainHand event, @Root Player player) throws ObjectMappingException {
 
+        if (ConfigGetters.getPlayerDifficulty(player).equalsIgnoreCase("none")) return;
+
+        int index = ConfigGetters.getIndexFromString(ConfigGetters.getPlayerDifficulty(player));
+
+        if (!ConfigManager.getConfigNode(index, 7, "World-Blacklist").isEmpty()) {
+
+            List<String> worlds = ConfigManager.getConfigNode(index, 7, "World-Blacklist").getList(TypeToken.of(String.class));
+            World world = player.getWorld();
+            if (worlds.contains(world.getName())) return;
+
+        }
         if (event.getTargetBlock().getState().getType().getName().contains("trade_machine")) {
 
-            if (!AccountHandler.hasPermission(player, TierHandler.getTradePerm())) {
+            if (!AccountHandler.hasPermission(player, TierHandler.getTradePerm(index), index)) {
 
-                if (!TierHandler.getTradePerm().equalsIgnoreCase("none")) {
+                if (!TierHandler.getTradePerm(index).equalsIgnoreCase("none")) {
 
                     event.setCancelled(true);
-                    player.sendMessage(FancyText.getFancyText(TierHandler.getTradeMessage()));
+                    player.sendMessage(FancyText.getFancyText(TierHandler.getTradeMessage(index)));
 
                 }
 
@@ -43,31 +60,42 @@ public class TradeListener {
     @SubscribeEvent
     public void onTrade (PixelmonReceivedEvent event) throws ObjectMappingException {
 
-        if (TierHandler.areTradesModified()) {
+        Player player = (Player) event.getPlayer();
+        if (ConfigGetters.getPlayerDifficulty(player).equalsIgnoreCase("none")) return;
+
+        int index = ConfigGetters.getIndexFromString(ConfigGetters.getPlayerDifficulty(player));
+
+        if (TierHandler.areTradesModified(index)) {
 
             if (event.getReceiveType().equals(ReceiveType.Trade)) {
 
-                Player player = (Player) event.getPlayer();
+                if (!ConfigManager.getConfigNode(index, 7, "World-Blacklist").isEmpty()) {
+
+                    List<String> worlds = ConfigManager.getConfigNode(index, 7, "World-Blacklist").getList(TypeToken.of(String.class));
+                    World world = player.getWorld();
+                    if (worlds.contains(world.getName())) return;
+
+                }
                 int lvl = event.getPokemon().getLvl().getLevel();
                 EntityPixelmon pokemon = event.getPokemon();
 
                 int playerLevel;
-                if (TierHandler.getTierBase().equals("Catching")) {
+                if (TierHandler.getTierBase(index).equals("Catching")) {
 
-                    playerLevel = AccountHandler.getCatchTier(player);
+                    playerLevel = AccountHandler.getCatchTier(player, index);
 
                 } else {
 
-                    playerLevel = AccountHandler.getLevelTier(player);
+                    playerLevel = AccountHandler.getLevelTier(player, index);
 
                 }
 
-                int lvlMax = getMaxLvl(TierHandler.getTierBase(), playerLevel);
+                int lvlMax = getMaxLvl(index, TierHandler.getTierBase(index), playerLevel);
                 if (lvl > lvlMax) {
 
                     pokemon.level.setLevel(lvlMax);
                     pokemon.updateStats();
-                    player.sendMessage(FancyText.getFancyText(TierHandler.getTradeMessage()));
+                    player.sendMessage(FancyText.getFancyText(TierHandler.getTradeMessage(index)));
 
                 }
 
@@ -77,15 +105,15 @@ public class TradeListener {
 
     }
 
-    private static int getMaxLvl (String value, int num) {
+    private static int getMaxLvl (int index, String value, int num) {
 
         if (value.equals("Catching")) {
 
-            return TierHandler.getMaxCatchLevel(num);
+            return TierHandler.getMaxCatchLevel(index, num);
 
         } else {
 
-            return TierHandler.getMaxLvlLevel(num);
+            return TierHandler.getMaxLvlLevel(index, num);
 
         }
 

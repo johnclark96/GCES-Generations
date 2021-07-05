@@ -1,6 +1,7 @@
 package com.lypaka.gces.gottacatchemsmall.Listeners;
 
 import com.google.common.reflect.TypeToken;
+import com.lypaka.gces.gottacatchemsmall.Config.ConfigGetters;
 import com.lypaka.gces.gottacatchemsmall.Config.ConfigManager;
 import com.lypaka.gces.gottacatchemsmall.Utils.AccountHandler;
 import com.lypaka.gces.gottacatchemsmall.Utils.FancyText;
@@ -10,9 +11,9 @@ import com.lypaka.pixelskills.Utils.CustomEvents.SkillLevelUpEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import ninja.leaping.configurate.objectmapping.ObjectMappingException;
 import org.spongepowered.api.entity.living.player.Player;
+import org.spongepowered.api.world.World;
 
 import java.util.List;
-import java.util.Map;
 
 public class SkillsListener {
 
@@ -23,22 +24,31 @@ public class SkillsListener {
 
         String skill = event.getSkill();
         Player player = event.getPlayer();
+        if (ConfigGetters.getPlayerDifficulty(player).equalsIgnoreCase("none")) return;
 
-        if (ConfigManager.getConfigNode(7, "Skills", "Enable-Skill-Restriction").getBoolean()) {
+        int index = ConfigGetters.getIndexFromString(ConfigGetters.getPlayerDifficulty(player));
+        if (!ConfigManager.getConfigNode(index, 7, "World-Blacklist").isEmpty()) {
 
-            List<String> blackList = ConfigManager.getConfigNode(7, "Skills", "Blacklist").getList(TypeToken.of(String.class));
+            List<String> worlds = ConfigManager.getConfigNode(index, 7, "World-Blacklist").getList(TypeToken.of(String.class));
+            World world = player.getWorld();
+            if (worlds.contains(world.getName())) return;
+
+        }
+        if (ConfigManager.getConfigNode(index, 7, "Skills", "Enable-Skill-Restriction").getBoolean()) {
+
+            List<String> blackList = ConfigManager.getConfigNode(index, 7, "Skills", "Blacklist").getList(TypeToken.of(String.class));
             if (blackList.contains(skill)) {
 
                 return;
 
             }
 
-            if (!ConfigManager.getConfigNode(7, "Skills", "Tiers", skill).isVirtual()) {
+            if (!ConfigManager.getConfigNode(index, 7, "Skills", "Tiers", skill).isVirtual()) {
 
                 int tierLevel = AccountHandler.getTierLevel(player, skill);
-                int capLevel = ConfigManager.getConfigNode(7, "Skills", "Tiers", skill, "Tier-" + tierLevel, "Cap-Level").getInt();
+                int capLevel = ConfigManager.getConfigNode(index, 7, "Skills", "Tiers", skill, "Tier-" + tierLevel, "Cap-Level").getInt();
                 int skillLevel = AccountsHandler.getLevel(skill, player);
-                String message = ConfigManager.getConfigNode(7, "Skills", "Tiers", skill, "Tier-" + tierLevel, "Message").getString();
+                String message = ConfigManager.getConfigNode(index, 7, "Skills", "Tiers", skill, "Tier-" + tierLevel, "Message").getString();
 
                 if (skillLevel >= capLevel) {
 
@@ -58,22 +68,32 @@ public class SkillsListener {
 
         String skill = event.getSkill();
         Player player = event.getPlayer();
+        if (ConfigGetters.getPlayerDifficulty(player).equalsIgnoreCase("none")) return;
 
-        if (ConfigManager.getConfigNode(7, "Skills", "Enable-Skill-Restriction").getBoolean()) {
+        int index = ConfigGetters.getIndexFromString(ConfigGetters.getPlayerDifficulty(player));
+        if (!ConfigManager.getConfigNode(index, 7, "World-Blacklist").isEmpty()) {
 
-            List<String> blackList = ConfigManager.getConfigNode(7, "Skills", "Blacklist").getList(TypeToken.of(String.class));
+            List<String> worlds = ConfigManager.getConfigNode(index, 7, "World-Blacklist").getList(TypeToken.of(String.class));
+            World world = player.getWorld();
+            if (worlds.contains(world.getName())) return;
+
+        }
+
+        if (ConfigManager.getConfigNode(index, 7, "Skills", "Enable-Skill-Restriction").getBoolean()) {
+
+            List<String> blackList = ConfigManager.getConfigNode(index, 7, "Skills", "Blacklist").getList(TypeToken.of(String.class));
             if (blackList.contains(skill)) {
 
                 return;
 
             }
 
-            if (!ConfigManager.getConfigNode(7, "Skills", "Tiers", skill).isVirtual()) {
+            if (!ConfigManager.getConfigNode(index, 7, "Skills", "Tiers", skill).isVirtual()) {
 
                 int tierLevel = AccountHandler.getTierLevel(player, skill);
-                int capLevel = ConfigManager.getConfigNode(7, "Skills", "Tiers", skill, "Tier-" + tierLevel, "Cap-Level").getInt();
+                int capLevel = ConfigManager.getConfigNode(index, 7, "Skills", "Tiers", skill, "Tier-" + tierLevel, "Cap-Level").getInt();
                 int skillLevel = AccountsHandler.getLevel(skill, player);
-                String message = ConfigManager.getConfigNode(7, "Skills", "Tiers", skill, "Tier-" + tierLevel, "Message").getString();
+                String message = ConfigManager.getConfigNode(index, 7, "Skills", "Tiers", skill, "Tier-" + tierLevel, "Message").getString();
 
                 if (skillLevel >= capLevel) {
 

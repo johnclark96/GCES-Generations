@@ -1,6 +1,7 @@
 package com.lypaka.gces.gottacatchemsmall.Listeners;
 
 import com.google.common.reflect.TypeToken;
+import com.lypaka.gces.gottacatchemsmall.Config.ConfigGetters;
 import com.lypaka.gces.gottacatchemsmall.Config.ConfigManager;
 import com.lypaka.gces.gottacatchemsmall.Utils.FancyText;
 import com.lypaka.gces.gottacatchemsmall.Utils.TierHandler;
@@ -18,20 +19,23 @@ public class ZMovesListener {
     public void onZMove (UseMoveEvent.UseZMoveEvent event) throws ObjectMappingException {
 
         Player player = (Player) event.getPixelmonWrapper().getPlayerOwner();
-        if (!ConfigManager.getConfigNode(7, "World-Blacklist").isEmpty()) {
+        if (ConfigGetters.getPlayerDifficulty(player).equalsIgnoreCase("none")) return;
 
-            List<String> worlds = ConfigManager.getConfigNode(7, "World-Blacklist").getList(TypeToken.of(String.class));
+        int index = ConfigGetters.getIndexFromString(ConfigGetters.getPlayerDifficulty(player));
+        if (!ConfigManager.getConfigNode(index, 7, "World-Blacklist").isEmpty()) {
+
+            List<String> worlds = ConfigManager.getConfigNode(index, 7, "World-Blacklist").getList(TypeToken.of(String.class));
             World world = player.getWorld();
             if (worlds.contains(world.getName())) return;
 
         }
 
-        if (TierHandler.restrictZMoves()) {
+        if (TierHandler.restrictZMoves(index)) {
 
-            if (!player.hasPermission(TierHandler.getZMovesPermission())) {
+            if (!player.hasPermission(TierHandler.getZMovesPermission(index))) {
 
                 event.setCanceled(true);
-                player.sendMessage(FancyText.getFancyText(TierHandler.getZMovesMessage()));
+                player.sendMessage(FancyText.getFancyText(TierHandler.getZMovesMessage(index)));
 
             }
 

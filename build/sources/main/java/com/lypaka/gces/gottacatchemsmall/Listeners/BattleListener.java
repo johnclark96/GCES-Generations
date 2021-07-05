@@ -1,5 +1,8 @@
 package com.lypaka.gces.gottacatchemsmall.Listeners;
 
+import com.google.common.reflect.TypeToken;
+import com.lypaka.gces.gottacatchemsmall.Config.ConfigGetters;
+import com.lypaka.gces.gottacatchemsmall.Config.ConfigManager;
 import com.lypaka.gces.gottacatchemsmall.Utils.AccountHandler;
 import com.lypaka.gces.gottacatchemsmall.Utils.FancyText;
 import com.lypaka.gces.gottacatchemsmall.Utils.TierHandler;
@@ -13,6 +16,9 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import ninja.leaping.configurate.objectmapping.ObjectMappingException;
 import org.spongepowered.api.entity.living.player.Player;
+import org.spongepowered.api.world.World;
+
+import java.util.List;
 
 public class BattleListener {
 
@@ -23,12 +29,24 @@ public class BattleListener {
 
         if (bcb.participants.get(0) instanceof PlayerParticipant) {
 
-            if (TierHandler.restrictBattles()) {
+            EntityPlayerMP fPlayer = (EntityPlayerMP) bcb.participants.get(0).getEntity();
+            Player player = (Player) fPlayer;
 
-                EntityPlayerMP fPlayer = (EntityPlayerMP) bcb.participants.get(0).getEntity();
-                Player player = (Player) fPlayer;
-                int level = AccountHandler.getLevelTier(player);
-                int pokeLevel = TierHandler.getMaxLvlLevel(level);
+            if (ConfigGetters.getPlayerDifficulty(player).equalsIgnoreCase("none")) return;
+
+            int index = ConfigGetters.getIndexFromString(ConfigGetters.getPlayerDifficulty(player));
+
+            if (TierHandler.restrictBattles(index)) {
+
+                if (!ConfigManager.getConfigNode(index, 7, "World-Blacklist").isEmpty()) {
+
+                    List<String> worlds = ConfigManager.getConfigNode(index, 7, "World-Blacklist").getList(TypeToken.of(String.class));
+                    World world = player.getWorld();
+                    if (worlds.contains(world.getName())) return;
+
+                }
+                int level = AccountHandler.getLevelTier(player, index);
+                int pokeLevel = TierHandler.getMaxLvlLevel(index, level);
                 PlayerStorage party = PixelmonStorage.pokeBallManager.getPlayerStorage(fPlayer).get();
 
                 for (int i = 0; i < party.count(); i++) {
@@ -41,7 +59,7 @@ public class BattleListener {
                         if (pokemonLevel > pokeLevel) {
 
                             event.setCanceled(true);
-                            player.sendMessage(FancyText.getFancyText(TierHandler.getBattleMessage()));
+                            player.sendMessage(FancyText.getFancyText(TierHandler.getBattleMessage(index)));
                             break;
 
                         }
@@ -55,12 +73,24 @@ public class BattleListener {
         }
         if (bcb.participants.get(1) instanceof PlayerParticipant) {
 
-            if (TierHandler.restrictBattles()) {
+            EntityPlayerMP fPlayer = (EntityPlayerMP) bcb.participants.get(1).getEntity();
+            Player player = (Player) fPlayer;
 
-                EntityPlayerMP fPlayer = (EntityPlayerMP) bcb.participants.get(1).getEntity();
-                Player player = (Player) fPlayer;
-                int level = AccountHandler.getLevelTier(player);
-                int pokeLevel = TierHandler.getMaxLvlLevel(level);
+            if (ConfigGetters.getPlayerDifficulty(player).equalsIgnoreCase("none")) return;
+
+            int index = ConfigGetters.getIndexFromString(ConfigGetters.getPlayerDifficulty(player));
+
+            if (TierHandler.restrictBattles(index)) {
+
+                if (!ConfigManager.getConfigNode(index, 7, "World-Blacklist").isEmpty()) {
+
+                    List<String> worlds = ConfigManager.getConfigNode(index, 7, "World-Blacklist").getList(TypeToken.of(String.class));
+                    World world = player.getWorld();
+                    if (worlds.contains(world.getName())) return;
+
+                }
+                int level = AccountHandler.getLevelTier(player, index);
+                int pokeLevel = TierHandler.getMaxLvlLevel(index, level);
 
                 PlayerStorage party = PixelmonStorage.pokeBallManager.getPlayerStorage(fPlayer).get();
 
@@ -74,7 +104,7 @@ public class BattleListener {
                         if (pokemonLevel > pokeLevel) {
 
                             event.setCanceled(true);
-                            player.sendMessage(FancyText.getFancyText(TierHandler.getBattleMessage()));
+                            player.sendMessage(FancyText.getFancyText(TierHandler.getBattleMessage(index)));
                             break;
 
                         }
