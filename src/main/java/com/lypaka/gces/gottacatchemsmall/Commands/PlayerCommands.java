@@ -9,6 +9,7 @@ import org.spongepowered.api.command.spec.CommandSpec;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
+import org.spongepowered.api.text.format.TextStyles;
 
 public class PlayerCommands {
 
@@ -51,5 +52,28 @@ public class PlayerCommands {
                 .build();
 
     }
+
+    public static CommandSpec getHelpCommand() {
+
+        return CommandSpec.builder()
+                .permission("gces.command.help")
+                .executor((sender, context) -> {
+
+                    Text headerCommandText = Text.of(TextColors.YELLOW, TextStyles.BOLD, "======== [ GCES Help Command ] ========");
+                    Text helpUserCommandText = Text.of(TextColors.RED, TextStyles.BOLD, "/gces check", TextColors.GREEN, " - Checks users stats", TextColors.RED, TextStyles.BOLD, "\n/gces levelup", TextColors.GREEN, " - Levels up the user", TextColors.RED, TextStyles.BOLD, "\n/gces setlvl", TextColors.GREEN, " - Sets the users Level", TextColors.RED, TextStyles.BOLD, "\n/gces getlevel", TextColors.GREEN, " - Gets users level", TextColors.RED, TextStyles.BOLD, "\n/gces difficulty", TextColors.GREEN, " - Difficulty Subcommand");
+                    Text helpAdminCommandText = Text.of(TextColors.DARK_RED, TextStyles.BOLD, "/gces check <playername> ", TextColors.GREEN, " - Checks other users stats", TextColors.DARK_RED, TextStyles.BOLD, "\n/gces addperm", TextColors.GREEN, " - Adds User Permission" , TextColors.DARK_RED, TextStyles.BOLD, "\n/gces removeperm", TextColors.GREEN, " - Removes user permission", TextColors.DARK_RED, TextStyles.BOLD, "\n/gces reload", TextColors.GREEN, " - Reloads the GCES Plugin");
+                    Text footerCommandText = Text.of(TextColors.YELLOW, TextStyles.BOLD, "=======================================");
+
+                    sender.sendMessage(headerCommandText);
+                    sender.sendMessage(helpUserCommandText);
+                    sender.sendMessage(helpAdminCommandText);
+                    sender.sendMessage(footerCommandText);
+
+                    return CommandResult.success();
+                })
+                .build();
+
+    }
+
 
 }

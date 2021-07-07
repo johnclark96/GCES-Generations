@@ -87,6 +87,7 @@ public class GCES {
                 .child(AdminCommands.getGetLevelCommand(), "getlvl", "getlevel")
                 .child(AdminCommands.getDifficultyCommands(), "difficulty", "diff")
                 .child(PlayerCommands.getCheckCommand(), "check")
+                .child(PlayerCommands.getHelpCommand(), "help")
                 .executor((sender, context) -> {return CommandResult.success();}).build();
 
         Sponge.getCommandManager().register(this, main, "gces");
