@@ -6,6 +6,7 @@ import com.lypaka.gces.gottacatchemsmall.GCES;
 import com.lypaka.gces.gottacatchemsmall.Listeners.JoinListener;
 import com.lypaka.gces.gottacatchemsmall.Utils.AccountHandler;
 import com.lypaka.gces.gottacatchemsmall.Utils.TierHandler;
+import com.lypaka.pixelskills.Commands.AdminCommand;
 import ninja.leaping.configurate.objectmapping.ObjectMappingException;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.command.CommandResult;
@@ -58,7 +59,8 @@ public class AdminCommands {
         return CommandSpec.builder()
                 .arguments(
                         GenericArguments.string(Text.of("category")),
-                        GenericArguments.player(Text.of("player"))
+                        GenericArguments.player(Text.of("player")),
+                        GenericArguments.optional(GenericArguments.string(Text.of("skill")))
                 )
                 .permission("gces.command.admin")
                 .executor((sender, context) -> {
@@ -121,6 +123,20 @@ public class AdminCommands {
                             }
                             break;
 
+                        case "skills":
+                            if (!context.getOne("skill").isPresent()) {
+
+                                sender.sendMessage(Text.of(TextColors.RED, "Need to specify which skill!"));
+                                return CommandResult.success();
+
+                            } else {
+
+                                String skill = AdminCommand.getPrettySkillName(context.getOne("skill").get().toString());
+                                AccountHandler.levelUpSkillTierLevel(player, skill);
+
+                            }
+                            break;
+
                     }
 
                     player.sendMessage(Text.of(TextColors.GREEN, "You leveled up your " + category.replace("CatchingEvo", "catching evolution") + " tier!"));
@@ -140,7 +156,8 @@ public class AdminCommands {
                 .arguments(
                         GenericArguments.string(Text.of("category")),
                         GenericArguments.player(Text.of("player")),
-                        GenericArguments.integer(Text.of("tier"))
+                        GenericArguments.integer(Text.of("tier")),
+                        GenericArguments.optional(GenericArguments.string(Text.of("skill")))
                 )
                 .permission("gces.command.admin")
                 .executor((sender, context) -> {
@@ -152,16 +169,40 @@ public class AdminCommands {
 
                     try {
 
-                        if (level <= TierHandler.getMaxTierLevel(index, category)) {
+                        String s = "";
+                        if (context.getOne("skill").isPresent()) {
 
-                            switch (category) {
+                            s = AdminCommand.getPrettySkillName(context.getOne("skill").get().toString());
 
-                                case "Catching":
+                        }
+
+
+                        if (level <= TierHandler.getMaxTierLevel(index, category, s)) {
+
+                            switch (category.toLowerCase()) {
+
+                                case "catching":
                                     AccountHandler.setCatchTier(player, level);
                                     break;
-                                case "Leveling":
+
+                                case "leveling":
                                     AccountHandler.setLevelTier(player, level);
                                     break;
+
+                                case "skills":
+                                    if (!context.getOne("skill").isPresent()) {
+
+                                        sender.sendMessage(Text.of(TextColors.RED, "Need to specify which skill!"));
+                                        return CommandResult.success();
+
+                                    } else {
+
+                                        String skill = AdminCommand.getPrettySkillName(context.getOne("skill").get().toString());
+                                        AccountHandler.setTierLevel(player, skill, level);
+
+                                    }
+                                    break;
+
 
                             }
 

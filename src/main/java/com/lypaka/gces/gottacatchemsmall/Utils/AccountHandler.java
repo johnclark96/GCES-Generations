@@ -2,6 +2,7 @@ package com.lypaka.gces.gottacatchemsmall.Utils;
 
 import com.google.common.reflect.TypeToken;
 import com.lypaka.gces.gottacatchemsmall.Config.ConfigManager;
+import com.lypaka.pixelskills.Config.Getters.GeneralGetters;
 import ninja.leaping.configurate.objectmapping.ObjectMappingException;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.entity.living.player.Player;
@@ -83,6 +84,24 @@ public class AccountHandler {
     public static int getTierLevel (Player player, String skill) {
 
         return ConfigManager.getPlayerConfigNode(player.getUniqueId(), "Levels", "Skill-Tiers", skill).getInt();
+
+    }
+
+    public static void setTierLevel (Player player, String skill, int level) {
+
+        ConfigManager.getPlayerConfigNode(player.getUniqueId(), "Levels", "Skill-Tiers", skill).setValue(level);
+
+    }
+
+    public static void levelUpSkillTierLevel (Player player, String skill) {
+
+        int current = getTierLevel(player, skill);
+        if (current < GeneralGetters.getMaxLevel(GeneralGetters.getConfigFromSkill(skill))) {
+
+            int increased = current + 1;
+            ConfigManager.getPlayerConfigNode(player.getUniqueId(), "Levels", "Skill-Tiers", skill).setValue(increased);
+
+        }
 
     }
 
@@ -168,7 +187,7 @@ public class AccountHandler {
 
         String mode = ConfigManager.getConfigNode(index, 6, "Permission-Mode").getString();
         int level = ConfigManager.getPlayerConfigNode(player.getUniqueId(),"Levels", "Catching-Tier").getInt();
-        if (level < TierHandler.getMaxTierLevel(index, "Catching")) {
+        if (level < TierHandler.getMaxTierLevel(index, "Catching", "")) {
 
             if (mode.equalsIgnoreCase("gces")) {
 
@@ -204,7 +223,7 @@ public class AccountHandler {
         int level = ConfigManager.getPlayerConfigNode(player.getUniqueId(),"Levels", "Leveling-Tier").getInt();
         String mode = ConfigManager.getConfigNode(index, 6, "Permission-Mode").getString();
 
-        if (level < TierHandler.getMaxTierLevel(index, "Leveling")) {
+        if (level < TierHandler.getMaxTierLevel(index, "Leveling", "")) {
 
             if (mode.equalsIgnoreCase("gces")) {
 

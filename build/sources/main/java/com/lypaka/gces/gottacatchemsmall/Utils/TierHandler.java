@@ -303,7 +303,7 @@ public class TierHandler {
 
     /**-------------------------------------General--------------------------------------**/
 
-    public static int getMaxTierLevel (int index, String tier) throws ObjectMappingException {
+    public static int getMaxTierLevel (int index, String tier, String skill) throws ObjectMappingException {
 
         if (tier.equalsIgnoreCase("Catching")) {
 
@@ -314,6 +314,19 @@ public class TierHandler {
 
             Map<String, Map<String, String>> map = ConfigManager.getConfigNode(index, 2, "Leveling", "Tiers").getValue(new TypeToken<Map<String, Map<String, String>>>() {});
             return map.size();
+
+        } else if (tier.equalsIgnoreCase("skills")) {
+
+            if (ConfigManager.getConfigNode(index, 7, "Skills", "Tiers", skill).isVirtual()) {
+
+                return 0;
+
+            } else {
+
+                Map<String, Map<String, String>> map = ConfigManager.getConfigNode(index, 7, "Skills", "Tiers", skill).getValue(new TypeToken<Map<String, Map<String, String>>>() {});
+                return map.size();
+
+            }
 
         }
 
