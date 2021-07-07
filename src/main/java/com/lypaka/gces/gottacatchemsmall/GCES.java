@@ -16,6 +16,9 @@ import org.spongepowered.api.event.game.GameReloadEvent;
 import org.spongepowered.api.event.game.state.GamePreInitializationEvent;
 import org.spongepowered.api.plugin.Plugin;
 import org.spongepowered.api.plugin.PluginContainer;
+import org.spongepowered.api.text.Text;
+import org.spongepowered.api.text.format.TextColors;
+import org.spongepowered.api.text.format.TextStyles;
 
 import java.io.IOException;
 import java.nio.file.Path;
@@ -87,8 +90,21 @@ public class GCES {
                 .child(AdminCommands.getGetLevelCommand(), "getlvl", "getlevel")
                 .child(AdminCommands.getDifficultyCommands(), "difficulty", "diff")
                 .child(PlayerCommands.getCheckCommand(), "check")
-                .child(PlayerCommands.getHelpCommand(), "help")
-                .executor((sender, context) -> {return CommandResult.success();}).build();
+                .executor((sender, context) -> {
+
+                    Text headerCommandText = Text.of(TextColors.YELLOW, TextStyles.BOLD, "======== [ GCES Help Command ] ========");
+                    Text helpUserCommandText = Text.of(TextColors.RED, TextStyles.BOLD, "/gces check", TextColors.GREEN, " - Checks users stats", TextColors.RED, TextStyles.BOLD, "\n/gces levelup", TextColors.GREEN, " - Levels up the user", TextColors.RED, TextStyles.BOLD, "\n/gces setlvl", TextColors.GREEN, " - Sets the users Level", TextColors.RED, TextStyles.BOLD, "\n/gces getlevel", TextColors.GREEN, " - Gets users level", TextColors.RED, TextStyles.BOLD, "\n/gces difficulty", TextColors.GREEN, " - Difficulty Subcommand");
+                    Text helpAdminCommandText = Text.of(TextColors.DARK_RED, TextStyles.BOLD, "/gces check <playername> ", TextColors.GREEN, " - Checks other users stats", TextColors.DARK_RED, TextStyles.BOLD, "\n/gces addperm", TextColors.GREEN, " - Adds User Permission" , TextColors.DARK_RED, TextStyles.BOLD, "\n/gces removeperm", TextColors.GREEN, " - Removes user permission", TextColors.DARK_RED, TextStyles.BOLD, "\n/gces reload", TextColors.GREEN, " - Reloads the GCES Plugin");
+                    Text footerCommandText = Text.of(TextColors.YELLOW, TextStyles.BOLD, "=======================================");
+
+                    sender.sendMessage(headerCommandText);
+                    sender.sendMessage(helpUserCommandText);
+                    sender.sendMessage(helpAdminCommandText);
+                    sender.sendMessage(footerCommandText);
+
+                    return CommandResult.success();
+
+                }).build();
 
         Sponge.getCommandManager().register(this, main, "gces");
 
