@@ -19,6 +19,12 @@ public class JoinListener {
     public void onFirstJoin (ClientConnectionEvent.Join event, @Root Player player) {
 
         ConfigManager.loadPlayer(player.getUniqueId());
+        if (ConfigManager.getPlayerConfigNode(player.getUniqueId(), "Difficulty").isVirtual()) {
+
+            ConfigManager.getPlayerConfigNode(player.getUniqueId(), "Difficulty").setValue("none");
+            ConfigManager.savePlayer(player.getUniqueId());
+
+        }
 
     }
 
@@ -89,7 +95,7 @@ public class JoinListener {
 
             if (ConfigManager.getConfigNode(index, 1, "Mega-Evolving", "Unlock-Permission-Given-On-Join").getBoolean()) {
 
-                AccountHandler.addPermission(player, ConfigManager.getConfigNode(index, 3, "Mega-Evolving", "Unlock-Mega-Evolving").getString(), index);
+                AccountHandler.addPermission(player, ConfigManager.getConfigNode(index, 1, "Mega-Evolving", "Unlock-Mega-Evolving").getString(), index);
 
             }
 
@@ -99,9 +105,9 @@ public class JoinListener {
 
             }
 
-            if (ConfigManager.getConfigNode(index, 8, "Dynamaxing", "Unlock-Permission-Give-On-Join").getBoolean()) {
+            if (TierHandler.unlockDynamaxingOnJoin(index)) {
 
-                AccountHandler.addPermission(player, ConfigManager.getConfigNode(index, 8, "Dynamaxing", "Unlock-Dynamaxing").getString(), index);
+                AccountHandler.addPermission(player, TierHandler.getDynamaxingPermission(index), index);
 
             }
 
@@ -177,7 +183,7 @@ public class JoinListener {
 
         if (ConfigManager.getConfigNode(index, 1, "Mega-Evolving", "Unlock-Permission-Given-On-Join").getBoolean()) {
 
-            AccountHandler.addPermission(player, ConfigManager.getConfigNode(index, 3, "Mega-Evolving", "Unlock-Mega-Evolving").getString(), index);
+            AccountHandler.addPermission(player, ConfigManager.getConfigNode(index, 1, "Mega-Evolving", "Unlock-Mega-Evolving").getString(), index);
 
         }
 
@@ -187,9 +193,9 @@ public class JoinListener {
 
         }
 
-        if (ConfigManager.getConfigNode(index, 8, "Dynamaxing", "Unlock-Permission-Give-On-Join").getBoolean()) {
+        if (TierHandler.unlockDynamaxingOnJoin(index)) {
 
-            AccountHandler.addPermission(player, ConfigManager.getConfigNode(index, 8, "Dynamaxing", "Unlock-Dynamaxing").getString(), index);
+            AccountHandler.addPermission(player, TierHandler.getDynamaxingPermission(index), index);
 
         }
 

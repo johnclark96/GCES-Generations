@@ -49,7 +49,7 @@ dependencies {
     compile 'com.github.codehusky:HuskyUI-Plugin:v0.6.0-PRE4'
     compileOnly fileTree(dir: 'C:\\Users\\Ryan\\Documents\\GitHub\\LIBRARIES', include: ['PixelSkills-Generations.jar'])
     compileOnly fileTree(dir: 'C:\\Users\\Ryan\\Documents\\GitHub\\LIBRARIES', include: ['Generations.jar'])
-    compileOnly fileTree(dir: 'C:\\Users\\Ryan\\Documents\\GitHub\\LIBRARIES', include: ['SpawnValidation-Generations.jar'])
+
 }
 
 

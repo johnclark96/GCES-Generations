@@ -5,6 +5,7 @@ import com.lypaka.gces.gottacatchemsmall.Config.ConfigGetters;
 import com.lypaka.gces.gottacatchemsmall.Config.ConfigManager;
 import com.lypaka.gces.gottacatchemsmall.Utils.AccountHandler;
 import com.lypaka.gces.gottacatchemsmall.Utils.FancyText;
+import com.lypaka.gces.gottacatchemsmall.Utils.TierHandler;
 import com.pixelmongenerations.api.events.DynamaxEvent;
 import com.pixelmongenerations.common.battle.controller.participants.PlayerParticipant;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -29,25 +30,25 @@ public class DynamaxListener {
 
             int index = ConfigGetters.getIndexFromString(ConfigGetters.getPlayerDifficulty(player));
 
-            boolean restrict = ConfigManager.getConfigNode(index, 8, "Dynamaxing", "Restrict-Dynamaxing").getBoolean();
-            if (!restrict) return;
+            if (TierHandler.restrictDynamaxing(index)) {
 
-            String permission = ConfigManager.getConfigNode(index, 8, "Dynamaxing", "Unlock-Dynamaxing").getString();
-            if (permission.equalsIgnoreCase("none")) return;
+                String permission = ConfigManager.getConfigNode(index, 8, "Dynamaxing", "Unlock-Dynamaxing").getString();
+                if (permission.equalsIgnoreCase("none")) return;
 
 
-            if (!ConfigManager.getConfigNode(index, 7, "World-Blacklist").isEmpty()) {
+                if (!ConfigManager.getConfigNode(index, 6, "World-Blacklist").isEmpty()) {
 
-                List<String> worlds = ConfigManager.getConfigNode(index, 7, "World-Blacklist").getList(TypeToken.of(String.class));
-                World world = player.getWorld();
-                if (worlds.contains(world.getName())) return;
+                    List<String> worlds = ConfigManager.getConfigNode(index, 6, "World-Blacklist").getList(TypeToken.of(String.class));
+                    World world = player.getWorld();
+                    if (worlds.contains(world.getName())) return;
 
-            }
-            if (!AccountHandler.hasPermission(player, permission, index)) {
+                }
+                if (!AccountHandler.hasPermission(player, permission, index)) {
 
-                event.setCanceled(true);
-                Text text = FancyText.getFancyText(ConfigManager.getConfigNode(index, 8, "Dynamaxing", "Restriction-Message").getString());
-                player.sendMessage(text);
+                    event.setCanceled(true);
+                    player.sendMessage(FancyText.getFancyText(TierHandler.getDynamaxingMessage(index)));
+
+                }
 
             }
 

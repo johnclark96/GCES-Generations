@@ -77,9 +77,6 @@ public class TierHandler {
 
     public static boolean areEvoStagesRestricted (int index) {
 
-        System.out.println("DEBUG EVO STAGE: INDEX == " + index);
-        System.out.println("DEBUG EVO STAGE: STRING == " + ConfigGetters.getStringFromIndex(index));
-
         return ConfigManager.getConfigNode(index, 0, "Evolution-Stage", "Restrict-By-Evolution-Stage").getBoolean();
 
     }
@@ -275,6 +272,32 @@ public class TierHandler {
     public static boolean unlockZMovesOnJoin (int index) {
 
         return ConfigManager.getConfigNode(index, 4, "Z-Moves", "Unlock-Permission-Given-On-Join").getBoolean();
+
+    }
+
+    /** ------------------------------------Dynamaxing-----------------------------------**/
+
+    public static boolean restrictDynamaxing (int index) {
+
+        return ConfigManager.getConfigNode(index, 8, "Dynamaxing", "Restrict-Dynamaxing").getBoolean();
+
+    }
+
+    public static String getDynamaxingMessage (int index) {
+
+        return ConfigManager.getConfigNode(index, 8, "Dynamaxing", "Restriction-Message").getString();
+
+    }
+
+    public static String getDynamaxingPermission (int index) {
+
+        return ConfigManager.getConfigNode(index, 8, "Dynamaxing", "Unlock-Dynamaxing").getString();
+
+    }
+
+    public static boolean unlockDynamaxingOnJoin (int index) {
+
+        return ConfigManager.getConfigNode(index, 8, "Dynamaxing", "Unlock-Permission-Given-On-Join").getBoolean();
 
     }
 
